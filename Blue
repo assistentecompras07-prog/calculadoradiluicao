@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Diluição | Blue</title>
+    <!-- Tailwind CSS for modern responsive utility styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        blueBrand: {
+                            50: '#e6f4fe',
+                            100: '#cce9fd',
+                            500: '#0090e7',
+                            600: '#0077c2',
+                            700: '#005f9e',
+                            900: '#003d66'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f0f7ff 0%, #e1effe 100%);
+            min-height: 100vh;
+        }
+        .bubble {
+            position: absolute;
+            background: rgba(0, 144, 231, 0.1);
+            border-radius: 50%;
+            animation: floatBubble 8s infinite ease-in-out;
+            pointer-events: none;
+        }
+        @keyframes floatBubble {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-20px) scale(1.05); }
+        }
+    </style>
+</head>
+<body class="text-slate-800 relative overflow-x-hidden flex flex-col justify-between min-h-screen">
+
+    <div class="bubble w-32 h-32 top-10 left-10 opacity-40"></div>
+    <div class="bubble w-48 h-48 bottom-10 right-10 opacity-30"></div>
+
+    <header class="w-full bg-white/80 backdrop-blur-md shadow-sm border-b border-blue-100 py-4 px-6 sticky top-0 z-50">
+        <div class="max-w-4xl mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-11 h-11 bg-blueBrand-500 rounded-full flex items-center justify-center text-white font-black text-xl shadow-md relative overflow-hidden ring-4 ring-blueBrand-100">
+                    <span class="italic tracking-tighter">Blue</span>
+                    <div class="absolute -top-1 -right-1 w-4 h-4 bg-white/40 rounded-full"></div>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold text-blueBrand-900 tracking-tight">Blue</h1>
+                    <p class="text-xs text-blueBrand-600 font-medium">Calculadora Profissional de Diluição</p>
+                </div>
+            </div>
+            <div class="hidden sm:flex items-center space-x-2 text-xs font-semibold text-blueBrand-700 bg-blueBrand-50 px-3 py-1.5 rounded-full border border-blueBrand-100">
+                <i class="fa-solid fa-shield-halved text-blueBrand-500"></i>
+                <span>Dosagem Precisa</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-4xl w-full mx-auto p-4 sm:p-6 flex-grow my-4">
+        
+        <div class="bg-white rounded-2xl shadow-xl border border-blue-100 p-6 sm:p-8 mb-6 relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blueBrand-50 to-transparent rounded-bl-full pointer-events-none"></div>
+            
+            <h2 class="text-2xl font-bold text-slate-900 mb-2">Calculadora de Diluição</h2>
+            <p class="text-sm text-slate-600 mb-6">Informe os dados da embalagem, o valor pago, o nível de sujidade e a quantidade desejada para ver a receita e o custo exato da mistura.</p>
+
+            <form id="dilutionForm" onsubmit="event.preventDefault(); calcularDiluicao();" class="space-y-6">
+
+                <!-- 1. Tamanho da Embalagem -->
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-3">
+                        <i class="fa-solid fa-bottle-droplet text-blueBrand-500 mr-2"></i>1. Tamanho da Embalagem do Produto
+                    </label>
+                    <div class="grid grid-cols-2 gap-4">
+                        <label class="cursor-pointer relative">
+                            <input type="radio" name="tamanhoGalao" value="1" checked class="peer sr-only" onchange="atualizarPrecoSugerido()">
+                            <div class="p-5 bg-slate-50 border-2 border-slate-200 rounded-xl flex flex-col items-center justify-center transition-all peer-checked:border-blueBrand-500 peer-checked:bg-blueBrand-50/50 peer-checked:shadow-md hover:border-blueBrand-300">
+                                <div class="w-10 h-16 bg-blueBrand-100 rounded-t-lg rounded-b-md border border-blueBrand-300 flex flex-col items-center justify-between py-1 mb-2 shadow-inner relative">
+                                    <div class="w-3 h-2 bg-blueBrand-700 rounded-sm"></div>
+                                    <span class="text-[10px] font-bold text-blueBrand-900">1L</span>
+                                </div>
+                                <span class="font-bold text-slate-800 text-sm">1 Litro</span>
+                            </div>
+                        </label>
+
+                        <label class="cursor-pointer relative">
+                            <input type="radio" name="tamanhoGalao" value="5" class="peer sr-only" onchange="atualizarPrecoSugerido()">
+                            <div class="p-5 bg-slate-50 border-2 border-slate-200 rounded-xl flex flex-col items-center justify-center transition-all peer-checked:border-blueBrand-500 peer-checked:bg-blueBrand-50/50 peer-checked:shadow-md hover:border-blueBrand-300">
+                                <div class="w-12 h-20 bg-blueBrand-100 rounded-lg border border-blueBrand-300 flex flex-col items-center justify-between py-1 mb-2 shadow-inner relative">
+                                    <div class="w-4 h-2.5 bg-blueBrand-700 rounded-sm"></div>
+                                    <span class="text-xs font-bold text-blueBrand-900">5L</span>
+                                </div>
+                                <span class="font-bold text-slate-800 text-sm">5 Litros</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- 2. Valor da Embalagem -->
+                <div>
+                    <label for="valorEmbalagem" class="block text-sm font-semibold text-slate-700 mb-2">
+                        <i class="fa-solid fa-tag text-blueBrand-500 mr-2"></i>2. Valor da Embalagem (R$)
+                    </label>
+                    <div class="relative rounded-xl shadow-sm">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 font-semibold">R$</div>
+                        <input type="number" id="valorEmbalagem" step="0.01" min="0.01" required placeholder="Ex: 35,00" value="35.00"
+                            class="block w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blueBrand-500 focus:border-blueBrand-500 text-slate-900 text-base font-medium transition-all">
+                    </div>
+                </div>
+
+                <!-- 3. Nível de Sujidade -->
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-3">
+                        <i class="fa-solid fa-broom text-blueBrand-500 mr-2"></i>3. Nível de Sujidade
+                    </label>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <label class="cursor-pointer">
+                            <input type="radio" name="sujidade" value="baixa" checked class="peer sr-only">
+                            <div class="p-4 bg-slate-50 border-2 border-slate-200 rounded-xl text-center transition-all peer-checked:border-blueBrand-500 peer-checked:bg-blueBrand-50/50 peer-checked:shadow-md hover:border-blueBrand-300">
+                                <span class="block font-bold text-slate-800 text-sm">Baixa Sujidade</span>
+                                <span class="inline-block mt-1 bg-emerald-100 text-emerald-800 text-xs font-semibold px-2 py-0.5 rounded-full">1 : 100</span>
+                            </div>
+                        </label>
+
+                        <label class="cursor-pointer">
+                            <input type="radio" name="sujidade" value="media" class="peer sr-only">
+                            <div class="p-4 bg-slate-50 border-2 border-slate-200 rounded-xl text-center transition-all peer-checked:border-blueBrand-500 peer-checked:bg-blueBrand-50/50 peer-checked:shadow-md hover:border-blueBrand-300">
+                                <span class="block font-bold text-slate-800 text-sm">Média Sujidade</span>
+                                <span class="inline-block mt-1 bg-amber-100 text-amber-800 text-xs font-semibold px-2 py-0.5 rounded-full">1 : 20</span>
+                            </div>
+                        </label>
+
+                        <label class="cursor-pointer">
+                            <input type="radio" name="sujidade" value="alta" class="peer sr-only">
+                            <div class="p-4 bg-slate-50 border-2 border-slate-200 rounded-xl text-center transition-all peer-checked:border-blueBrand-500 peer-checked:bg-blueBrand-50/50 peer-checked:shadow-md hover:border-blueBrand-300">
+                                <span class="block font-bold text-slate-800 text-sm">Alta Sujidade</span>
+                                <span class="inline-block mt-1 bg-rose-100 text-rose-800 text-xs font-semibold px-2 py-0.5 rounded-full">1 : 10</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- 4. Quantidade de Solução Desejada -->
+                <div>
+                    <label for="qtdSolucao" class="block text-sm font-semibold text-slate-700 mb-2">
+                        <i class="fa-solid fa-bucket text-blueBrand-500 mr-2"></i>4. Quantidade de Solução Desejada (Litros)
+                    </label>
+                    <div class="relative">
+                        <input type="number" id="qtdSolucao" step="0.5" min="0.5" required value="10" placeholder="Ex: 10"
+                            class="block w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blueBrand-500 focus:border-blueBrand-500 text-slate-900 text-base font-medium transition-all">
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full bg-gradient-to-r from-blueBrand-600 to-blueBrand-500 text-white font-bold py-4 px-6 rounded-xl shadow-lg hover:from-blueBrand-700 hover:to-blueBrand-600 focus:outline-none transition-all flex items-center justify-center space-x-2 text-base">
+                    <i class="fa-solid fa-calculator"></i>
+                    <span>Calcular Diluição</span>
+                </button>
+            </form>
+        </div>
+
+        <div id="resultadoCard" class="hidden bg-gradient-to-br from-blueBrand-900 to-blueBrand-700 text-white rounded-2xl shadow-2xl p-6 sm:p-8 relative overflow-hidden transition-all">
+            <div class="flex items-center justify-between mb-6 pb-4 border-b border-white/20">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center text-white">
+                        <i class="fa-solid fa-clipboard-check text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold">Resultado da Mistura</h3>
+                        <p class="text-xs text-blueBrand-100" id="resResumoParametros">Parâmetros da mistura</p>
+                    </div>
+                </div>
+                <button onclick="copiarResultados()" class="bg-white/10 hover:bg-white/20 text-white text-xs font-semibold py-2 px-3 rounded-lg transition flex items-center space-x-1.5 border border-white/20">
+                    <i class="fa-regular fa-copy"></i>
+                    <span>Copiar</span>
+                </button>
+            </div>
+
+            <!-- Grid Cards showing recipe amounts & mixture cost -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+                <!-- 1. Produto Puro -->
+                <div class="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/10">
+                    <span class="block text-xs text-blueBrand-100 font-medium mb-1"><i class="fa-solid fa-droplet mr-1.5 text-blueBrand-300"></i>Produto Puro</span>
+                    <span class="text-2xl font-black text-white" id="resProdutoPuro">100 ml</span>
+                    <span class="block text-[11px] text-blueBrand-200 mt-1">Quantidade necessária</span>
+                </div>
+
+                <!-- 2. Água -->
+                <div class="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/10">
+                    <span class="block text-xs text-blueBrand-100 font-medium mb-1"><i class="fa-solid fa-water mr-1.5 text-blueBrand-300"></i>Água Limpa</span>
+                    <span class="text-2xl font-black text-white" id="resAgua">9.90 L</span>
+                    <span class="block text-[11px] text-blueBrand-200 mt-1">Para completar</span>
+                </div>
+
+                <!-- 3. Custo da Mistura -->
+                <div class="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/10">
+                    <span class="block text-xs text-blueBrand-100 font-medium mb-1"><i class="fa-solid fa-coins mr-1.5 text-blueBrand-300"></i>Custo desta Mistura</span>
+                    <span class="text-2xl font-black text-emerald-300" id="resCustoMistura">R$ 3,50</span>
+                    <span class="block text-[11px] text-blueBrand-200 mt-1">Valor proporcional gasto</span>
+                </div>
+            </div>
+
+            <div class="bg-blue-950/40 rounded-xl p-4 text-xs text-blueBrand-100 flex items-start space-x-3 border border-white/10">
+                <i class="fa-solid fa-circle-info text-blueBrand-300 text-sm mt-0.5"></i>
+                <p><strong>Dica de Uso:</strong> Adicione primeiro uma parte da água no recipiente e em seguida o produto concentrado Blue para garantir a homogeneidade perfeita.</p>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="text-center py-6 text-xs text-slate-500">
+        Blue • Todos os direitos reservados
+    </footer>
+
+    <script>
+        function atualizarPrecoSugerido() {
+            const tamanho = document.querySelector('input[name="tamanhoGalao"]:checked').value;
+            const inputValor = document.getElementById('valorEmbalagem');
+            if (tamanho === "1") {
+                inputValor.value = "35.00";
+            } else {
+                inputValor.value = "140.00";
+            }
+            calcularDiluicao();
+        }
+
+        function calcularDiluicao() {
+            const tamanhoGalaoLitros = parseFloat(document.querySelector('input[name="tamanhoGalao"]:checked').value);
+            const valorEmbalagem = parseFloat(document.getElementById('valorEmbalagem').value);
+            const sujidade = document.querySelector('input[name="sujidade"]:checked').value;
+            const qtdDesejadaLitros = parseFloat(document.getElementById('qtdSolucao').value);
+
+            if (isNaN(valorEmbalagem) || valorEmbalagem <= 0 || isNaN(qtdDesejadaLitros) || qtdDesejadaLitros <= 0) {
+                return;
+            }
+
+            // Razões: Baixa 1:100, Média 1:20, Alta 1:10
+            let divisorRazao = 100;
+            let nomeSujidade = "Baixa Sujidade (1:100)";
+            
+            if (sujidade === 'media') {
+                divisorRazao = 20;
+                nomeSujidade = "Média Sujidade (1:20)";
+            } else if (sujidade === 'alta') {
+                divisorRazao = 10;
+                nomeSujidade = "Alta Sujidade (1:10)";
+            }
+
+            // ml de produto por litro de água
+            let mlPorLitroAgua = 1000 / divisorRazao;
+            let mlProdutoPuro = qtdDesejadaLitros * mlPorLitroAgua;
+            let litrosAgua = qtdDesejadaLitros - (mlProdutoPuro / 1000);
+            if (litrosAgua < 0) litrosAgua = 0;
+
+            // Custo por ml do produto puro
+            const volumeTotalMlPuro = tamanhoGalaoLitros * 1000;
+            const precoPorMl = valorEmbalagem / volumeTotalMlPuro;
+            const custoDaMistura = mlProdutoPuro * precoPorMl;
+
+            // Update UI elements
+            document.getElementById('resResumoParametros').innerText = `${qtdDesejadaLitros} Litros • ${nomeSujidade} • Embalagem ${tamanhoGalaoLitros}L`;
+            
+            document.getElementById('resProdutoPuro').innerText = mlProdutoPuro >= 1000 
+                ? (mlProdutoPuro / 1000).toFixed(2) + ' Litros' 
+                : mlProdutoPuro.toFixed(0) + ' ml';
+
+            document.getElementById('resAgua').innerText = litrosAgua >= 1 
+                ? litrosAgua.toFixed(2) + ' Litros' 
+                : (litrosAgua * 1000).toFixed(0) + ' ml';
+
+            document.getElementById('resCustoMistura').innerText = 'R$ ' + custoDaMistura.toFixed(2).replace('.', ',');
+
+            const cardRes = document.getElementById('resultadoCard');
+            cardRes.classList.remove('hidden');
+            cardRes.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
