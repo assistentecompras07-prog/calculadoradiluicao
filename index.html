@@ -236,7 +236,7 @@
             <span id="resWater">0 litros</span>
         </div>
         <div class="result-item result-total">
-            <span>Custo desta Mistura:</span>
+            <span>Custo por Litro:</span>
             <span id="resCost">R$ 0,00</span>
         </div>
     </div>
@@ -270,12 +270,29 @@
         const mlPerLiter = 1000 / ratio;
         const productNeededMl = desiredLiters * mlPerLiter;
         const waterNeededLiters = desiredLiters - (productNeededMl / 1000);
+        
         const costPerMl = price / selectedPackageSize;
         const totalCost = productNeededMl * costPerMl;
+        
+        const costPerLiter = desiredLiters > 0 ? (totalCost / desiredLiters) : 0;
+
+        // Formatação amigável para a água (Litros e Mililitros)
+        const waterMlTotal = Math.max(0, waterNeededLiters * 1000);
+        const wholeLiters = Math.floor(waterMlTotal / 1000);
+        const remainingMl = Math.round(waterMlTotal % 1000);
+
+        let waterText = "";
+        if (wholeLiters > 0 && remainingMl > 0) {
+            waterText = `${wholeLiters} L e ${remainingMl} ml`;
+        } else if (wholeLiters > 0) {
+            waterText = `${wholeLiters} L`;
+        } else {
+            waterText = `${remainingMl} ml`;
+        }
 
         document.getElementById('resProduct').innerText = productNeededMl.toFixed(0) + " ml";
-        document.getElementById('resWater').innerText = Math.max(0, waterNeededLiters).toFixed(2).replace('.', ',') + " L";
-        document.getElementById('resCost').innerText = "R$ " + totalCost.toFixed(2).replace('.', ',');
+        document.getElementById('resWater').innerText = waterText;
+        document.getElementById('resCost').innerText = "R$ " + costPerLiter.toFixed(2).replace('.', ',') + " /L";
     }
 
     calculate();
