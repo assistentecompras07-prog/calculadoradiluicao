@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Diluição - Blue</title>
+    <style>
+        :root {
+            --primary-blue: #0090e7;
+            --dark-blue: #005a9c;
+            --light-blue: #e6f2fd;
+            --accent-blue: #00bfff;
+            --gray-bg: #f8f9fa;
+            --text-color: #333333;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--gray-bg);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .calculator-container {
+            background: #ffffff;
+            width: 100%;
+            max-width: 480px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 144, 231, 0.15);
+            padding: 30px;
+            box-sizing: border-box;
+            border-top: 6px solid var(--primary-blue);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .header h1 {
+            color: var(--primary-blue);
+            font-size: 28px;
+            margin: 10px 0 5px 0;
+            font-weight: 800;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 14px;
+            margin: 0;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #444;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .currency-symbol {
+            position: absolute;
+            left: 12px;
+            color: #666;
+            font-weight: 600;
+        }
+
+        input[type="number"], select {
+            width: 100%;
+            padding: 12px 12px 12px 35px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        select {
+            padding-left: 12px;
+            background-color: white;
+            cursor: pointer;
+        }
+
+        input[type="number"]:focus, select:focus {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(0, 144, 231, 0.1);
+        }
+
+        .sizes-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .size-card {
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: white;
+        }
+
+        .size-card input {
+            display: none;
+        }
+
+        .size-card.active {
+            border-color: var(--primary-blue);
+            background-color: var(--light-blue);
+            color: var(--dark-blue);
+            font-weight: bold;
+        }
+
+        .results-box {
+            background-color: var(--light-blue);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 25px;
+            border: 1px dashed var(--primary-blue);
+        }
+
+        .results-box h3 {
+            color: var(--dark-blue);
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 16px;
+            text-align: center;
+            border-bottom: 1px solid rgba(0, 144, 231, 0.2);
+            padding-bottom: 8px;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .result-item span:first-child {
+            color: #555;
+        }
+
+        .result-item span:last-child {
+            font-weight: bold;
+            color: var(--dark-blue);
+        }
+
+        .result-total {
+            margin-top: 15px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(0, 144, 231, 0.2);
+            font-size: 16px !important;
+        }
+
+        .result-total span:last-child {
+            color: #27ae60;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="calculator-container">
+    <div class="header">
+        <h1>Blue</h1>
+        <p>Calculadora de Diluição de Produtos</p>
+    </div>
+
+    <!-- Tamanho da Embalagem -->
+    <div class="form-group">
+        <label>Tamanho da Embalagem</label>
+        <div class="sizes-grid">
+            <label class="size-card active" id="card-1" onclick="selectSize(1000)">
+                <input type="radio" name="packageSize" value="1000" checked>
+                <strong>1 Litro</strong><br><small>1.000 ml</small>
+            </label>
+            <label class="size-card" id="card-5" onclick="selectSize(5000)">
+                <input type="radio" name="packageSize" value="5000">
+                <strong>5 Litros</strong><br><small>5.000 ml</small>
+            </label>
+        </div>
+    </div>
+
+    <!-- Valor do Produto -->
+    <div class="form-group">
+        <label for="productPrice">Valor Pago no Produto (R$)</label>
+        <div class="input-wrapper">
+            <span class="currency-symbol">R$</span>
+            <input type="number" id="productPrice" placeholder="0,00" step="0.01" min="0" oninput="calculate()">
+        </div>
+    </div>
+
+    <!-- Nível de Sujidade -->
+    <div class="form-group">
+        <label for="dirtLevel">Nível de Sujidade</label>
+        <select id="dirtLevel" onchange="calculate()">
+            <option value="100">Baixa (1:100 - 10 ml/L)</option>
+            <option value="20">Média (1:20 - 50 ml/L)</option>
+            <option value="10">Alta (1:10 - 100 ml/L)</option>
+        </select>
+    </div>
+
+    <!-- Quantidade Desejada -->
+    <div class="form-group">
+        <label for="desiredVolume">Quantidade de Solução Desejada (Litros)</label>
+        <input type="number" id="desiredVolume" value="10" min="1" step="1" oninput="calculate()">
+    </div>
+
+    <!-- Resultados -->
+    <div class="results-box">
+        <h3>Resultado da Mistura</h3>
+        <div class="result-item">
+            <span>Produto Puro Necessário:</span>
+            <span id="resProduct">0 ml</span>
+        </div>
+        <div class="result-item">
+            <span>Água Necessária:</span>
+            <span id="resWater">0 litros</span>
+        </div>
+        <div class="result-item result-total">
+            <span>Custo desta Mistura:</span>
+            <span id="resCost">R$ 0,00</span>
+        </div>
+    </div>
+</div>
+
+<script>
+    let selectedPackageSize = 1000; // Padrão 1L em ml
+
+    function selectSize(sizeInMl) {
+        selectedPackageSize = sizeInMl;
+        
+        document.getElementById('card-1').classList.remove('active');
+        document.getElementById('card-5').classList.remove('active');
+        
+        if(sizeInMl === 1000) {
+            document.getElementById('card-1').classList.add('active');
+            document.querySelector('input[value="1000"]').checked = true;
+        } else {
+            document.getElementById('card-5').classList.add('active');
+            document.querySelector('input[value="5000"]').checked = true;
+        }
+        
+        calculate();
+    }
+
+    function calculate() {
+        const price = parseFloat(document.getElementById('productPrice').value) || 0;
+        const ratio = parseFloat(document.getElementById('dirtLevel').value);
+        const desiredLiters = parseFloat(document.getElementById('desiredVolume').value) || 0;
+
+        const mlPerLiter = 1000 / ratio;
+        const productNeededMl = desiredLiters * mlPerLiter;
+        const waterNeededLiters = desiredLiters - (productNeededMl / 1000);
+        const costPerMl = price / selectedPackageSize;
+        const totalCost = productNeededMl * costPerMl;
+
+        document.getElementById('resProduct').innerText = productNeededMl.toFixed(0) + " ml";
+        document.getElementById('resWater').innerText = Math.max(0, waterNeededLiters).toFixed(2).replace('.', ',') + " L";
+        document.getElementById('resCost').innerText = "R$ " + totalCost.toFixed(2).replace('.', ',');
+    }
+
+    calculate();
+</script>
+
+</body>
+</html>
