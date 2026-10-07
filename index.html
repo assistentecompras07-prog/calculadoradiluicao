@@ -157,9 +157,9 @@
         <p>Calculadora de Diluição de Produtos</p>
     </div>
 
-    <!-- Valor do Produto (Referente ao galão de 5 Litros) -->
+    <!-- Valor do Produto -->
     <div class="form-group">
-        <label for="productPrice">Valor Pago no Galão de 5 Litros (R$)</label>
+        <label for="productPrice">Valor do produto (R$)</label>
         <div class="input-wrapper">
             <span class="currency-symbol">R$</span>
             <input type="number" id="productPrice" placeholder="0,00" step="0.01" min="0" oninput="calculate()">
@@ -234,7 +234,6 @@
 
         document.getElementById('resProduct').innerText = productNeededMl.toFixed(0) + " ml";
         document.getElementById('resWater').innerText = waterText;
-        // Arredondado para 2 casas decimais (padrão de moeda)
         document.getElementById('resCost').innerText = "R$ " + costPerLiter.toFixed(2).replace('.', ',') + " /L";
     }
 
