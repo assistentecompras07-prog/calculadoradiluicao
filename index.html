@@ -188,12 +188,12 @@
     <div class="form-group">
         <label>Tamanho da Embalagem</label>
         <div class="sizes-grid">
-            <label class="size-card active" id="card-1" onclick="selectSize(1000)">
-                <input type="radio" name="packageSize" value="1000" checked>
+            <label class="size-card" id="card-1" onclick="selectSize(1000)">
+                <input type="radio" name="packageSize" value="1000">
                 <strong>1 Litro</strong><br><small>1.000 ml</small>
             </label>
-            <label class="size-card" id="card-5" onclick="selectSize(5000)">
-                <input type="radio" name="packageSize" value="5000">
+            <label class="size-card active" id="card-5" onclick="selectSize(5000)">
+                <input type="radio" name="packageSize" value="5000" checked>
                 <strong>5 Litros</strong><br><small>5.000 ml</small>
             </label>
         </div>
@@ -204,7 +204,7 @@
         <label for="productPrice">Valor Pago no Produto (R$)</label>
         <div class="input-wrapper">
             <span class="currency-symbol">R$</span>
-            <input type="number" id="productPrice" placeholder="0,00" step="0.01" min="0" oninput="calculate()">
+            <input type="number" id="productPrice" value="129.89" placeholder="0,00" step="0.01" min="0" oninput="calculate()">
         </div>
     </div>
 
@@ -214,7 +214,7 @@
         <select id="dirtLevel" onchange="calculate()">
             <option value="100">Baixa (1:100 - 10 ml/L)</option>
             <option value="20">Média (1:20 - 50 ml/L)</option>
-            <option value="10">Alta (1:10 - 100 ml/L)</option>
+            <option value="10" selected>Alta (1:10 - 100 ml/L)</option>
         </select>
     </div>
 
@@ -243,7 +243,7 @@
 </div>
 
 <script>
-    let selectedPackageSize = 1000; // Padrão 1L em ml
+    let selectedPackageSize = 5000; // Padrão inicial alterado para 5L
 
     function selectSize(sizeInMl) {
         selectedPackageSize = sizeInMl;
@@ -276,7 +276,7 @@
         
         const costPerLiter = desiredLiters > 0 ? (totalCost / desiredLiters) : 0;
 
-        // Formatação limpa e amigável da água (Litros e Mililitros)
+        // Formatação amigável da água (Litros e Mililitros)
         const waterMlTotal = Math.max(0, waterNeededLiters * 1000);
         const wholeLiters = Math.floor(waterMlTotal / 1000);
         const remainingMl = Math.round(waterMlTotal % 1000);
