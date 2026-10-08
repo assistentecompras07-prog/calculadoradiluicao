@@ -69,20 +69,35 @@
             // Cálculos para o lote desejado
             const pureNeededMl = desiredVolume * mlPerLiter;
             const waterNeededMl = (desiredVolume * 1000) - pureNeededMl;
-            const waterNeededL = waterNeededMl / 1000;
+            
+            const waterLiters = Math.floor(waterNeededMl / 1000);
+            const waterMl = Math.round(waterNeededMl % 1000);
+
+            // Formatação amigável da água (ex: 9 litros e 50 ml ou apenas litros se não houver quebra)
+            let waterText = '';
+            if (waterLiters > 0 && waterMl > 0) {
+                waterText = `${waterLiters} litro${waterLiters > 1 ? 's' : ''} e ${waterMl} ml`;
+            } else if (waterLiters > 0) {
+                waterText = `${waterLiters} litro${waterLiters > 1 ? 's' : ''}`;
+            } else {
+                waterText = `${waterMl} ml`;
+            }
 
             // Custo financeiro
             const pricePerMl = price / packageSize;
             const batchCost = pureNeededMl * pricePerMl;
             const costPerLiter = batchCost / desiredVolume;
 
+            // Formatação do custo no formato R$ 0,00 brasileiro
+            const formattedCost = costPerLiter.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
             // Rendimento total da embalagem selecionada
             const totalYieldL = packageSize / mlPerLiter;
 
             // Exibição dos resultados
             document.getElementById('resPure').innerHTML = `<strong>Produto Puro Necessário:</strong> ${pureNeededMl.toFixed(0)} ml`;
-            document.getElementById('resWater').innerHTML = `<strong>Água Necessária:</strong> ${waterNeededL.toFixed(2)} L`;
-            document.getElementById('resCost').innerHTML = `<strong>Custo por Litro da Solução:</strong> R$ ${costPerLiter.toFixed(2)} /L`;
+            document.getElementById('resWater').innerHTML = `<strong>Água Necessária:</strong> ${waterText}`;
+            document.getElementById('resCost').innerHTML = `<strong>Custo por Litro da Solução:</strong> ${formattedCost}`;
             document.getElementById('resYield').innerHTML = `<strong>Rendimento Total da Embalagem:</strong> Até ${totalYieldL.toFixed(0)} litros`;
 
             document.getElementById('results').classList.remove('hidden');
