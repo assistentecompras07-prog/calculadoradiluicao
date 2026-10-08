@@ -157,6 +157,15 @@
         <p>Calculadora de Diluição de Produtos</p>
     </div>
 
+    <!-- Tamanho da Embalagem -->
+    <div class="form-group">
+        <label for="packageSize">Tamanho da Embalagem</label>
+        <select id="packageSize" onchange="calculate()">
+            <option value="5000">Galão de 5 Litros (5.000 ml)</option>
+            <option value="1000">Frasco de 1 Litro (1.000 ml)</option>
+        </select>
+    </div>
+
     <!-- Valor do Produto R$ -->
     <div class="form-group">
         <label for="productPrice">Valor do produto R$</label>
@@ -201,10 +210,8 @@
 </div>
 
 <script>
-    // Tamanho fixo da embalagem em ml (5 Litros = 5000 ml)
-    const packageSizeMl = 5000;
-
     function calculate() {
+        const packageSizeMl = parseFloat(document.getElementById('packageSize').value);
         const price = parseFloat(document.getElementById('productPrice').value) || 0;
         const ratio = parseFloat(document.getElementById('dirtLevel').value);
         const desiredLiters = parseFloat(document.getElementById('desiredVolume').value) || 0;
@@ -213,7 +220,7 @@
         const productNeededMl = desiredLiters * mlPerLiter;
         const waterNeededLiters = desiredLiters - (productNeededMl / 1000);
         
-        const costPerMl = price / packageSizeMl;
+        const costPerMl = packageSizeMl > 0 ? (price / packageSizeMl) : 0;
         const totalCost = productNeededMl * costPerMl;
         
         const costPerLiter = desiredLiters > 0 ? (totalCost / desiredLiters) : 0;
